@@ -4,8 +4,9 @@
 Phân tích dữ liệu điểm thi THPT Quốc gia 2025 để đánh giá độ tin cậy của phổ điểm theo từng môn thi. Từ đó, đưa ra các đề xuất cải cách nhằm nâng cao giá trị phân loại của đề thi và đảm bảo công bằng trong tuyển sinh.
 
 ## 📊 Dữ liệu sử dụng
-- Nguồn: Bộ Giáo dục và Đào tạo (hoặc nguồn công khai khác nếu có)
-- Dữ liệu gồm: điểm thi theo từng môn, số lượng thí sinh dự thi, phân phối điểm
+- Nguồn: anhdung98/diem_thi_2025 trên GitHub
+- Mô tả: Bộ dữ liệu điểm thi THPT Quốc gia 2025, bao gồm điểm theo từng môn, mã tỉnh, mã trường, và thông tin thí sinh.
+- Lưu ý: Dữ liệu được thu thập từ nguồn công khai, phục vụ mục đích phân tích phi thương mại.
 
 ## 🔍 Các bước phân tích
 1. Tiền xử lý dữ liệu: kiểm tra thiếu dữ liệu, chuẩn hóa tên môn thi
