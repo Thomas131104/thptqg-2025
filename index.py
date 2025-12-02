@@ -1,10 +1,10 @@
-from dash import html, Input, Output, dcc
+from dash import html, Input, Output, dcc, callback
 import dash
 import dash_bootstrap_components as dbc
-from app import app, HOST, PORT, DEBUG
 
 
-app.layout = html.Div(
+
+layout = html.Div(
     style={"display": "flex", "flexDirection": "column", "minHeight": "100vh"},
     children=[
         dcc.Location(id="url"),
@@ -39,7 +39,7 @@ app.layout = html.Div(
 )
 
 
-@app.callback(
+@callback(
     Output("nav-home", "disabled"),
     Output("nav-main", "disabled"),
     Output("api", "disabled"),
@@ -56,6 +56,3 @@ def update_navbar(pathname):
         case _:
             return False, False, False
 
-
-if __name__ == "__main__":
-    app.run(host=HOST, port=PORT, debug=DEBUG)
