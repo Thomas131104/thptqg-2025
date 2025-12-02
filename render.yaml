@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: thptqg-2025
+    env: python
+    plan: free
+    buildCommand: "pip install numpy pandas matplotlib seaborn plotly polars dash dash-bootstrap-components gunicorn"
+    startCommand: "gunicorn index:server"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
