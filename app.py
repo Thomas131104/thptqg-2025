@@ -3,6 +3,7 @@ from dash import html, dcc
 import dash_bootstrap_components as dbc
 from dotenv import load_dotenv
 import os
+from index import layout
 
 load_dotenv()
 HOST = os.getenv("HOST", "127.0.0.1")
@@ -17,3 +18,9 @@ app = dash.Dash(
     suppress_callback_exceptions=True,
 )
 server = app.server
+app.layout = layout
+
+
+
+if __name__ == "__main__":
+    app.run(host=HOST, port=PORT, debug=DEBUG)
