@@ -219,3 +219,5 @@ __marimo__/
 # Deleting folder 
 notebook/
 cache/
+data/full
+.vscode

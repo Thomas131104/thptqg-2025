@@ -198,7 +198,7 @@ def update_histograms_by_program(clickData, combination, mode):
         title=f"GDPT 2006 – {province}<br><sub>{len(scores_old):,} sĩ tử</sub>",
     ).update_layout(bargap=0.1, title_x=0.5)
 
-    info_text = f"Mới: {len(scores_new):,} | Cũ: {len(scores_old):,}"
+    info_text = f"Tổng: {(len(score_new) + len(score_old)):,}<br>Mới: {len(scores_new):,} <br>Cũ: {len(scores_old):,}"
     info = dbc.Alert(
         [
             html.Strong(f"{province} ({'Sau' if mode=='after' else 'Trước'} cải cách)"),

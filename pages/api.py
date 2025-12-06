@@ -21,7 +21,7 @@ combo_list = FULL_COMBINATIONS.select("Tổ hợp").unique().collect()["Tổ h�
 # ==========================
 layout = html.Div(
     [
-        html.H2("Chọn dữ liệu các bài thi để tải"),
+        html.H2("Chọn dữ liệu tổ hợp và tổng điểm thi để tải"),
         html.Div(
             [
                 # --- Loại bản đồ ---
