@@ -113,30 +113,8 @@ layout = html.Div(
 )
 
 
-# --- Callback: đổi danh sách tỉnh ---
-@callback(
-    Output("btn-before", "active"),
-    Output("btn-after", "active"),
-    Output("province-dropdown", "options"),
-    Input("btn-before", "n_clicks"),
-    Input("btn-after", "n_clicks"),
-)
-def toggle_buttons(n_before, n_after):
-    triggered_id = ctx.triggered_id
-    if triggered_id == "btn-after":
-        options = [{"label": "Cả nước", "value": "Cả nước"}] + [
-            {"label": p, "value": p} for p in province_after_list
-        ]
-        return False, True, options
-    else:
-        options = [{"label": "Cả nước", "value": "Cả nước"}] + [
-            {"label": p, "value": p} for p in province_before_list
-        ]
-        return True, False, options
-
-
 # ======================
-# 1️⃣ HÀM LỌC DỮ LIỆU
+# HÀM LỌC DỮ LIỆU
 # ======================
 def filter_scores(full_scores, province, combinations, is_before, is_after):
     if not combinations:
@@ -154,7 +132,7 @@ def filter_scores(full_scores, province, combinations, is_before, is_after):
 
 
 # ======================
-# 2️⃣ HÀM TẠO BẢNG
+# HÀM TẠO BẢNG
 # ======================
 def make_summary_table(df, combinations):
     if df.is_empty():
@@ -173,48 +151,23 @@ def make_summary_table(df, combinations):
             )
             if sub.height == 0:
                 continue
-            # thống kê chung
+
             stats = sub.select(
                 [
                     pl.count().alias("Số lượng"),
-                    pl.col("Tổng điểm tổ hợp")
-                    .mean()
-                    .round(2)
-                    .alias("Điểm TB xét tốt nghiệp"),
+                    pl.col("Tổng điểm tổ hợp").mean().round(2).alias("Điểm TB xét tốt nghiệp"),
                     pl.col("Tổng điểm tổ hợp").min().round(2).alias("Thấp nhất"),
-                    pl.col("Tổng điểm tổ hợp")
-                    .quantile(0.05, "nearest")
-                    .round(2)
-                    .alias("5% điểm thấp nhất"),
-                    pl.col("Tổng điểm tổ hợp")
-                    .quantile(0.25, "nearest")
-                    .round(2)
-                    .alias("25% điểm thấp nhất"),
+                    pl.col("Tổng điểm tổ hợp").quantile(0.05, "nearest").round(2).alias("5% điểm thấp nhất"),
+                    pl.col("Tổng điểm tổ hợp").quantile(0.25, "nearest").round(2).alias("25% điểm thấp nhất"),
                     pl.col("Tổng điểm tổ hợp").median().round(2).alias("Trung vị"),
-                    pl.col("Tổng điểm tổ hợp")
-                    .quantile(0.75, "nearest")
-                    .round(2)
-                    .alias("25% điểm cao nhất"),
-                    pl.col("Tổng điểm tổ hợp")
-                    .quantile(0.95, "nearest")
-                    .round(2)
-                    .alias("5% điểm cao nhất"),
+                    pl.col("Tổng điểm tổ hợp").quantile(0.75, "nearest").round(2).alias("25% điểm cao nhất"),
+                    pl.col("Tổng điểm tổ hợp").quantile(0.95, "nearest").round(2).alias("5% điểm cao nhất"),
                     pl.col("Tổng điểm tổ hợp").max().round(2).alias("Cao nhất"),
                     pl.col("Tổng điểm tổ hợp").std().round(2).alias("Độ lệch chuẩn"),
                     pl.col("Tổng điểm tổ hợp").skew().round(2).alias("Độ nhọn (skew)"),
-                    pl.col("Tổng điểm tổ hợp")
-                    .kurtosis()
-                    .round(2)
-                    .alias("Độ nhọn (kurtosis)"),
+                    pl.col("Tổng điểm tổ hợp").kurtosis().round(2).alias("Độ nhọn (kurtosis)"),
                 ]
             ).to_dicts()[0]
-
-            # thêm thống kê riêng cho xét tuyển đại học
-            stats["Điểm TB xét tuyển đại học"] = (
-                sub.filter(pl.col("Tổng điểm đại học") >= 15)["Tổng điểm tổ hợp"]
-                .mean()
-                .round(2)
-            )
 
             col_prefix = f"{combo}_{prog_name}"
             for k, v in stats.items():
@@ -232,7 +185,7 @@ def make_summary_table(df, combinations):
 
 
 # ======================
-# 3️⃣ HÀM TẠO BIỂU ĐỒ
+# HÀM TẠO BIỂU ĐỒ
 # ======================
 def make_boxplot(df):
     if df.is_empty():
@@ -263,7 +216,6 @@ def make_boxplot(df):
         yaxis=dict(range=[0, 30]),
     )
 
-    # ⚙️ Ẩn lưới trục X để tránh "đường chéo"
     fig.for_each_xaxis(lambda x: x.update(showgrid=False))
     fig.for_each_yaxis(
         lambda y: y.update(showgrid=True, gridcolor="rgba(220,220,220,0.3)")
@@ -273,7 +225,29 @@ def make_boxplot(df):
 
 
 # ======================
-# 4️⃣ CALLBACK CHÍNH
+# CALLBACK: cập nhật dropdown tỉnh theo nút Before/After
+# ======================
+@callback(
+    Output("province-dropdown", "options"),
+    Output("province-dropdown", "value"),
+    Input("btn-before", "n_clicks"),
+    Input("btn-after", "n_clicks"),
+)
+def update_province_dropdown(n_before, n_after):
+    triggered_id = ctx.triggered_id
+    if triggered_id == "btn-after":
+        options = [{"label": "Cả nước", "value": "Cả nước"}] + [
+            {"label": p, "value": p} for p in province_after_list
+        ]
+    else:
+        options = [{"label": "Cả nước", "value": "Cả nước"}] + [
+            {"label": p, "value": p} for p in province_before_list
+        ]
+    return options, "Cả nước"
+
+
+# ======================
+# CALLBACK CHÍNH: tạo bảng + biểu đồ
 # ======================
 @callback(
     Output("summary-table", "columns"),
@@ -281,30 +255,28 @@ def make_boxplot(df):
     Output("graph", "children"),
     Input("province-dropdown", "value"),
     Input("combination-dropdown", "value"),
-    Input("btn-before", "active"),
-    Input("btn-after", "active"),
+    Input("btn-before", "n_clicks"),
+    Input("btn-after", "n_clicks"),
     prevent_initial_call=True,
 )
-def update_summary_and_graph(province, combinations, is_before, is_after):
-    # Xử lý trường hợp chưa chọn gì
+def update_summary_and_graph(province, combinations, n_before, n_after):
+    triggered_id = ctx.triggered_id
+    is_after = triggered_id == "btn-after"
+
+    # Xử lý chưa chọn tổ hợp
     if not combinations:
-        empty_cols = [
-            {"name": "Thông tin", "id": "Thông tin"},
-            {"name": "Giá trị", "id": "Giá trị"},
-        ]
+        empty_cols = [{"name": "Thông tin", "id": "Thông tin"}, {"name": "Giá trị", "id": "Giá trị"}]
         empty_data = [{"Thông tin": "-", "Giá trị": "-"}]
-        empty_graph = html.Div(
-            "Chưa chọn tỉnh hoặc tổ hợp môn", className="text-center text-muted"
-        )
+        empty_graph = html.Div("Chưa chọn tỉnh hoặc tổ hợp môn", className="text-center text-muted")
         return empty_cols, empty_data, empty_graph
 
-    # 1️⃣ Lọc dữ liệu
-    df = filter_scores(FULL_SCORES, province, combinations, is_before, is_after)
+    # Lọc dữ liệu
+    df = filter_scores(FULL_SCORES, province, combinations, not is_after, is_after)
 
-    # 2️⃣ Tạo bảng thống kê
+    # Tạo bảng
     cols, data = make_summary_table(df, combinations)
 
-    # 3️⃣ Tạo biểu đồ
+    # Tạo biểu đồ
     graph = make_boxplot(df)
 
     return cols, data, graph

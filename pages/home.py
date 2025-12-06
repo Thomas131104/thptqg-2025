@@ -1,5 +1,5 @@
 import dash
-from dash import html, dcc, callback, Input, Output
+from dash import html
 import dash_bootstrap_components as dbc
 
 
@@ -21,33 +21,25 @@ layout = html.Div(
                                     dbc.Col(
                                         html.Img(
                                             src="/assets/me.jpg",
-                                            style={
-                                                "width": "120px",
-                                                "border-radius": "100%",
-                                                "border": "2px solid #0d6efd",
-                                            },
+                                            className="img-fluid rounded border border-primary",
+                                            style={"maxWidth": "300px"}  # ảnh nhỏ gọn, không méo
                                         ),
                                         width="auto",
                                     ),
                                     dbc.Col(
                                         html.Div(
                                             [
-                                                html.P(
-                                                    "Xin chào mọi người! Tôi là Mus, sinh viên năm 4 chuyên ngành Hệ thống thông tin."
-                                                ),
-                                                html.P(
-                                                    "Tôi đam mê phân tích dữ liệu, trực quan hóa thông tin và xây dựng các ứng dụng dựa trên Big Data."
-                                                ),
-                                                html.P(
-                                                    "Dự án này là cơ hội để tôi kết hợp kỹ năng lập trình, thống kê và trực quan hóa dữ liệu thực tế."
-                                                ),
+                                                html.P("Xin chào mọi người! Tôi là Mus, sinh viên năm 4 chuyên ngành Hệ thống thông tin."),
+                                                html.P("Tôi đam mê phân tích dữ liệu, trực quan hóa thông tin và xây dựng các ứng dụng dựa trên Big Data."),
+                                                html.P("Dự án này là cơ hội để tôi kết hợp kỹ năng lập trình, thống kê và trực quan hóa dữ liệu thực tế."),
                                             ]
-                                        )
+                                        ),
+                                        width=True,  # chiếm phần còn lại
                                     ),
                                 ],
                                 align="center",
                                 className="g-3",
-                            ),
+                            )
                         ]
                     )
                 ]
